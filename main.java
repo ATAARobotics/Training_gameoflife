@@ -1,5 +1,6 @@
-public class main {
+public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        //Cell[][] cellsArray = getUserInput();
+        Board gameBoard = new Board(cellsArray);
     }
 }
