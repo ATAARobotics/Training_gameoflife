@@ -6,7 +6,7 @@ public class Cell {
     public boolean getCellState() {
         return isAlive;
     }
-    public void updateCellState(boolean newState) {
+    public void setCellState(boolean newState) {
         isAlive = newState;
     }
 }
