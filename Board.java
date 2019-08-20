@@ -27,9 +27,9 @@ class Board {
     }
 
     private void setStatus(boolean[][] statusArray) {
-        for (int i = 0; i < cells.length; i++) {
-            for (int x = 0; x < cells[i].length; x++) {
-                 cells[i][x].setCellState(statusArray[i][x]);
+        for (int y = 0; y < cells.length; y++) {
+            for (int x = 0; x < cells[0].length; x++) {
+                 cells[y][x].setCellState(statusArray[y][x]);
             }   
         }
     }
@@ -66,6 +66,7 @@ class Board {
             
             else if(noWraparoundXY[i][1] < 0) {
                 neighborY = yLength;
+                
             }
     
             else if(noWraparoundXY[i][1] > yLength) {
@@ -78,32 +79,44 @@ class Board {
     }
     private boolean[][] evaluateStatus(boolean[][] input) {
         for (int y = 0; y < input.length; y++) {
-            for (int x = 0; x < input[y].length; x++) {
+            for (int x = 0; x < input[0].length; x++) {
                 int aliveNeighbors = 0;
-                int[][] neighborXY = getNeighbors(x, y, input[0].length, input.length);
+                int[][] neighborXY = getNeighbors(x, y, input[0].length-1, input.length-1);
+                int z = 0;
                 for (int[] coordinates : neighborXY) {
-                    if(input[coordinates[0]][coordinates[1]]) {
+                    z++;
+                    if(cells[coordinates[1]][coordinates[0]].getCellState()) {
                         aliveNeighbors++;
                     }
                 }
                 //Neighbor rules here
                 if(aliveNeighbors == 3) {
-                    input[x][y] = true;
+                    input[y][x] = true;
                 }
 
-                else if(aliveNeighbors == 2 && cells[x][y].getCellState()) {
-                    input[x][y] = true;
+                else if(aliveNeighbors == 2 && cells[y][x].getCellState()) {
+                    input[y][x] = true;
                 }
                 
                 else {
-                    input[x][y] = false;
+                    input[y][x] = false;
                 }
-            }   
+            }  
         }
         return input;
     }
+
     public void updateStatus() {
+        System.out.println("Running " + new java.util.Date());
         boolean[][] statusArray = getStatus();
+        String arrayString = "";
+        for (boolean[] row : statusArray) {
+            for (boolean item : row) {
+                arrayString += item + " ";
+            }
+            arrayString += "\n";
+        }
+        System.out.println(arrayString);
         setStatus(evaluateStatus(statusArray));
     }
 }
