@@ -85,7 +85,7 @@ class Board {
         for (int y = 0; y < input.length; y++) {
             for (int x = 0; x < input[0].length; x++) {
                 int aliveNeighbors = 0;
-                int[][] neighborXY = getNeighbors(x, y, height-1, width-1);
+                int[][] neighborXY = getNeighbors(x, y, width-1, height-1);
                 for (int[] coordinates : neighborXY) {
                     if(cells[coordinates[1]][coordinates[0]].getCellState()) {
                         aliveNeighbors++;
