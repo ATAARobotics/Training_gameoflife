@@ -1,7 +1,9 @@
 class Board {
+
     private int height;
     private int width;
     private Cell[][] cells;
+
     public Board(int h, int w) {
         height = h;
         width = w;
@@ -11,29 +13,31 @@ class Board {
             }
         }
     }
+
     public Board(Cell[][] c) {
         height = c.length;
         width = c[0].length;
         cells = c;
     }
+
     public boolean[][] getStatus() {
-        boolean[][] statusArray = new boolean[cells.length][cells[0].length];
-        for (int i = 0; i < cells.length; i++) {
-            for (int x = 0; x < cells[i].length; x++) {
-                statusArray[i][x] = cells[i][x].getCellState();
+        boolean[][] statusArray = new boolean[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                statusArray[y][x] = cells[y][x].getCellState();
             }   
         }
         return statusArray;
     }
 
     private void setStatus(boolean[][] statusArray) {
-        for (int y = 0; y < cells.length; y++) {
-            for (int x = 0; x < cells[0].length; x++) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
                  cells[y][x].setCellState(statusArray[y][x]);
             }   
         }
     }
-    private int[][] getNeighbors(int x, int y, int xLength, int yLength) {
+    private int[][] getNeighbors(int x, int y, int xBound, int yBound) {
         int[][] neighborsXY = new int[8][2];
         int[][] noWraparoundXY = {
             {x-1, y-1},
@@ -48,28 +52,28 @@ class Board {
         for (int i = 0; i < 8; i++) {
             int neighborX = 0;
             int neighborY = 0;
-            if(noWraparoundXY[i][0] > 0 && noWraparoundXY[i][0] < xLength) {
+            if(noWraparoundXY[i][0] > 0 && noWraparoundXY[i][0] < xBound) {
                 neighborX = noWraparoundXY[i][0];
             }
     
             else if(noWraparoundXY[i][0] < 0) {
-                neighborX = xLength;
+                neighborX = xBound;
             }
     
-            else if(noWraparoundXY[i][0] > xLength) {
+            else if(noWraparoundXY[i][0] > xBound) {
                 neighborX = 0;
             }
     
-            if(noWraparoundXY[i][1] > 0 && noWraparoundXY[i][1] < yLength) {
+            if(noWraparoundXY[i][1] > 0 && noWraparoundXY[i][1] < yBound) {
                 neighborY = noWraparoundXY[i][1];
             }
             
             else if(noWraparoundXY[i][1] < 0) {
-                neighborY = yLength;
+                neighborY = yBound;
                 
             }
     
-            else if(noWraparoundXY[i][1] > yLength) {
+            else if(noWraparoundXY[i][1] > yBound) {
                 neighborY = 0;
             }
             neighborsXY[i][0] = neighborX;
@@ -81,15 +85,13 @@ class Board {
         for (int y = 0; y < input.length; y++) {
             for (int x = 0; x < input[0].length; x++) {
                 int aliveNeighbors = 0;
-                int[][] neighborXY = getNeighbors(x, y, input[0].length-1, input.length-1);
-                int z = 0;
+                int[][] neighborXY = getNeighbors(x, y, height-1, width-1);
                 for (int[] coordinates : neighborXY) {
-                    z++;
                     if(cells[coordinates[1]][coordinates[0]].getCellState()) {
                         aliveNeighbors++;
                     }
                 }
-                //Neighbor rules here
+
                 if(aliveNeighbors == 3) {
                     input[y][x] = true;
                 }
@@ -107,7 +109,6 @@ class Board {
     }
 
     public void updateStatus() {
-        System.out.println("Running " + new java.util.Date());
         boolean[][] statusArray = getStatus();
         String arrayString = "";
         for (boolean[] row : statusArray) {
