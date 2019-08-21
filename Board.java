@@ -3,12 +3,14 @@ class Board {
     private int height;
     private int width;
     private Cell[][] cells;
+    private int alive = 0;
 
     public Board(int h, int w) {
         height = h;
         width = w;
+        cells = new Cell[h][w];
         for (int i = 0; i < h; i++) {
-            for (int x = 0; x < w; i++) {
+            for (int x = 0; x < w; x++) {
                 cells[i][x] = new Cell(false);
             }
         }
@@ -30,10 +32,10 @@ class Board {
         return statusArray;
     }
 
-    private void setStatus(boolean[][] statusArray) {
+    public void setStatus(boolean[][] statusArray) {
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                 cells[y][x].setCellState(statusArray[y][x]);
+                cells[y][x].setCellState(statusArray[y][x]);
             }   
         }
     }
@@ -82,6 +84,7 @@ class Board {
         return neighborsXY;
     }
     private boolean[][] evaluateStatus(boolean[][] input) {
+        alive = 0;
         for (int y = 0; y < input.length; y++) {
             for (int x = 0; x < input[0].length; x++) {
                 int aliveNeighbors = 0;
@@ -94,10 +97,12 @@ class Board {
 
                 if(aliveNeighbors == 3) {
                     input[y][x] = true;
+                    alive++;
                 }
 
                 else if(aliveNeighbors == 2 && cells[y][x].getCellState()) {
                     input[y][x] = true;
+                    alive++;
                 }
                 
                 else {
@@ -108,7 +113,7 @@ class Board {
         return input;
     }
 
-    public void updateStatus() {
+    public int updateStatus() {
         boolean[][] statusArray = getStatus();
         String arrayString = "";
         for (boolean[] row : statusArray) {
@@ -119,5 +124,15 @@ class Board {
         }
         System.out.println(arrayString);
         setStatus(evaluateStatus(statusArray));
+        return alive;
+    }
+    public void clear(){
+        boolean[][] statusArray = new boolean[height][width];
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                statusArray[y][x] = false;
+            }   
+        }
+        setStatus(statusArray);
     }
 }
