@@ -8,9 +8,8 @@ public class GameOfLife {
     private Gui gui;
 	private Board gameBoard;
 	private boolean[][] savedStatus;
-	private static GameOfLife game;
     public static void main(String[] args) {
-		game = new GameOfLife();
+		new GameOfLife();
 	}
 	
 	public GameOfLife (){
