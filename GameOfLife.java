@@ -1,8 +1,6 @@
 import java.util.Timer;
 import java.util.TimerTask;
 
-import com.sun.media.jfxmedia.events.PlayerEvent;
-
 import java.awt.event.*;
 
 public class GameOfLife {
