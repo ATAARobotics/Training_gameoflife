@@ -8,13 +8,14 @@ public class GameOfLife {
     private Gui gui;
 	private Board gameBoard;
 	private boolean[][] savedStatus;
+	
     public static void main(String[] args) {
 		new GameOfLife();
 	}
 	
 	public GameOfLife (){
 		gameBoard = new Board(100, 100);
-        
+	
 		ActionListener actionPlay = new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -45,8 +46,14 @@ public class GameOfLife {
 				random();
 			}
 		};
-		ActionListener[] l = { actionPlay, actionPause, actionClear, actionReset, actionRandom };
-		gui = new Gui(l);
+		ActionListener step = new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				step();
+			}
+		};
+		ActionListener[] l = { actionPlay, actionPause, actionClear, actionReset, actionRandom, step };
+		gui = new Gui(l, gameBoard);
 		random();
 		start();
 	}
@@ -59,13 +66,18 @@ public class GameOfLife {
                 public void run() {
 					int i = gameBoard.updateStatus();
 					gui.updateLabels(i);
+					gameBoard.repaint();
+					timer.cancel();
+					timer.purge();
+					timer = null;
+					start();
                 }
-            }, 0, 500);
+			}, 10*gui.getSpeedSlider(), 1);
         }
 		if (savedStatus == null){
 			savedStatus = gameBoard.getStatus();
 		}
-    }
+	}
 
     private void pause(){
 		if (timer != null){
@@ -80,12 +92,20 @@ public class GameOfLife {
 		pause();
 		gui.resetLabels();
 		savedStatus = null;
+		gameBoard.repaint();
 	}
 
 	private void reset(){
 		gui.resetLabels();
 		pause();
 		gameBoard.setStatus(savedStatus);
+		gameBoard.repaint();
+	}
+
+	private void step(){
+		int i = gameBoard.updateStatus();
+		gui.updateLabels(i);
+		gameBoard.repaint();
 	}
 
 	private void random(){
@@ -97,7 +117,7 @@ public class GameOfLife {
 		for (int x = 0; x < l; x++){
 			for (int y = 0; y < h; y++){
 				boolean newState;
-				if ((Math.random()*2) < 0.8){
+				if (Math.random() < 0.4){
 					newState = false;
 				}
 				else {
@@ -108,5 +128,6 @@ public class GameOfLife {
 		}
 		gameBoard.setStatus(newBoard);
 		savedStatus = null;
+		gameBoard.repaint();
 	}
 }

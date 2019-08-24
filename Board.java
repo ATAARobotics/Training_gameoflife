@@ -1,9 +1,13 @@
-class Board {
+import java.awt.*;
+
+class Board extends Canvas {
 
     private int height;
     private int width;
     private Cell[][] cells;
     private int alive = 0;
+    int rectWidth = 9;
+    int rectHeight = 9;
 
     public Board(int h, int w) {
         height = h;
@@ -14,6 +18,8 @@ class Board {
                 cells[i][x] = new Cell(false);
             }
         }
+        setBackground(Color.white);
+        setBounds(0, 0, w*rectWidth, h*rectHeight);
     }
 
     public Board(Cell[][] c) {
@@ -122,7 +128,6 @@ class Board {
             }
             arrayString += "\n";
         }
-        System.out.println(arrayString);
         setStatus(evaluateStatus(statusArray));
         return alive;
     }
@@ -135,4 +140,17 @@ class Board {
         }
         setStatus(statusArray);
     }
+
+    @Override
+	public void paint(Graphics g){
+        boolean[][] boardState = getStatus();
+		g.setColor(Color.BLACK);
+		for (int x = 0; x < boardState.length;x++){
+			for (int y = 0; y < boardState[0].length;y++){
+				if (boardState[x][y]){
+					g.fillRect(x*rectWidth, y*rectHeight, rectWidth, rectHeight);
+				}
+			}
+		}
+	}
 }
